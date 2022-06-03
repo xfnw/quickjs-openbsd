@@ -47,13 +47,14 @@
 #include <sys/ioctl.h>
 #include <sys/wait.h>
 
-#if defined(__APPLE__)
+#if defined(__OpenBSD__)
 typedef sig_t sighandler_t;
 #if !defined(environ)
-#include <crt_externs.h>
-#define environ (*_NSGetEnviron())
+//#include <crt_externs.h>
+//#define environ (*_NSGetEnviron())
+extern char **environ;
 #endif
-#endif /* __APPLE__ */
+#endif /* __OpenBSD__ */
 
 #endif
 
@@ -1963,7 +1964,7 @@ static JSValue js_os_signal(JSContext *ctx, JSValueConst this_val,
     return JS_UNDEFINED;
 }
 
-#if defined(__linux__) || defined(__APPLE__)
+#if defined(__linux__) || defined(__OpenBSD__)
 static int64_t get_time_ms(void)
 {
     struct timespec ts;
@@ -2542,7 +2543,7 @@ static JSValue js_os_stat(JSContext *ctx, JSValueConst this_val,
         JS_DefinePropertyValueStr(ctx, obj, "ctime",
                                   JS_NewInt64(ctx, (int64_t)st.st_ctime * 1000),
                                   JS_PROP_C_W_E);
-#elif defined(__APPLE__)
+#elif defined(__OpenBSD__)
         JS_DefinePropertyValueStr(ctx, obj, "atime",
                                   JS_NewInt64(ctx, timespec_to_ms(&st.st_atimespec)),
                                   JS_PROP_C_W_E);
@@ -3567,7 +3568,7 @@ void js_std_set_worker_new_context_func(JSContext *(*func)(JSRuntime *rt))
 
 #if defined(_WIN32)
 #define OS_PLATFORM "win32"
-#elif defined(__APPLE__)
+#elif defined(__OpenBSD__)
 #define OS_PLATFORM "darwin"
 #elif defined(EMSCRIPTEN)
 #define OS_PLATFORM "js"

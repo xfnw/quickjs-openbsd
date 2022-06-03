@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-ifeq ($(shell uname -s),Darwin)
+ifeq ($(shell uname -s),OpenBSD)
 CONFIG_DARWIN=y
 endif
 # Windows cross compilation from Linux
@@ -174,10 +174,10 @@ QJS_LIB_OBJS+=$(OBJDIR)/libbf.o
 QJS_OBJS+=$(OBJDIR)/qjscalc.o
 endif
 
-HOST_LIBS=-lm -ldl -lpthread
+HOST_LIBS=-lm -lpthread
 LIBS=-lm
 ifndef CONFIG_WIN32
-LIBS+=-ldl -lpthread
+LIBS+=-lpthread
 endif
 LIBS+=$(EXTRA_LIBS)
 
