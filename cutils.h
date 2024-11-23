@@ -26,6 +26,7 @@
 #define CUTILS_H
 
 #include <stdlib.h>
+#include <string.h>
 #include <inttypes.h>
 
 #define likely(x)       __builtin_expect(!!(x), 1)
@@ -50,6 +51,12 @@
 #define container_of(ptr, type, member) ((type *)((uint8_t *)(ptr) - offsetof(type, member)))
 #endif
 
+#if !defined(_MSC_VER) && defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#define minimum_length(n)  static n
+#else
+#define minimum_length(n)  n
+#endif
+
 typedef int BOOL;
 
 #ifndef FALSE
@@ -63,6 +70,12 @@ void pstrcpy(char *buf, int buf_size, const char *str);
 char *pstrcat(char *buf, int buf_size, const char *s);
 int strstart(const char *str, const char *val, const char **ptr);
 int has_suffix(const char *str, const char *suffix);
+
+/* Prevent UB when n == 0 and (src == NULL or dest == NULL) */
+static inline void memcpy_no_ub(void *dest, const void *src, size_t n) {
+    if (n)
+        memcpy(dest, src, n);
+}
 
 static inline int max_int(int a, int b)
 {
